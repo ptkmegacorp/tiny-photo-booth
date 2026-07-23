@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>tiny photo booth</title>
+  <meta name="description" content="tiny photo booth — wall-mounted black-and-white photo strips for dive bars." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --ink: #1a1714;
+      --muted: #5c534a;
+      --paper: #ebe4d8;
+      --panel: #f7f2ea;
+      --line: #cfc4b4;
+      --accent: #c45c26;
+      --good: #2f6b4f;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      font-family: "IBM Plex Sans", sans-serif;
+      font-size: 1.05rem;
+      line-height: 1.55;
+      background:
+        radial-gradient(ellipse 90% 50% at 10% -10%, #d8cfc0 0%, transparent 55%),
+        radial-gradient(ellipse 70% 40% at 100% 0%, #e2d5c3 0%, transparent 50%),
+        linear-gradient(180deg, #f3eee6 0%, var(--paper) 40%, #e7dfd2 100%);
+      min-height: 100vh;
+    }
+
+    .wrap {
+      width: min(720px, calc(100% - 2rem));
+      margin: 0 auto;
+      padding: 2.5rem 0 4rem;
+    }
+
+    header {
+      margin-bottom: 1.75rem;
+    }
+
+    header h1 {
+      margin: 0;
+      font-family: "Bricolage Grotesque", sans-serif;
+      font-weight: 800;
+      font-size: clamp(2.4rem, 8vw, 3.6rem);
+      letter-spacing: -0.03em;
+      line-height: 0.95;
+      text-transform: lowercase;
+    }
+
+    .lede {
+      margin: 0.85rem 0 0;
+      max-width: 36rem;
+      color: var(--muted);
+      font-size: 1.12rem;
+    }
+
+    .hero {
+      display: block;
+      width: 100%;
+      height: auto;
+      margin: 1.5rem 0 1.25rem;
+      border: 1px solid var(--line);
+    }
+
+    section {
+      margin-top: 2.75rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--line);
+    }
+
+    h2 {
+      margin: 0 0 0.85rem;
+      font-family: "Bricolage Grotesque", sans-serif;
+      font-weight: 700;
+      font-size: 1.45rem;
+      letter-spacing: -0.02em;
+    }
+
+    p { margin: 0 0 1rem; }
+
+    p:last-child { margin-bottom: 0; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 0.75rem;
+      background: var(--panel);
+      border: 1px solid var(--line);
+    }
+
+    th, td {
+      text-align: left;
+      padding: 0.7rem 0.85rem;
+      border-bottom: 1px solid var(--line);
+      vertical-align: top;
+    }
+
+    th {
+      font-family: "Bricolage Grotesque", sans-serif;
+      font-weight: 600;
+      font-size: 0.92rem;
+      background: #e8dfd1;
+    }
+
+    tr:last-child th,
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    .split-bar {
+      display: flex;
+      height: 1.35rem;
+      margin: 1rem 0 0.5rem;
+      border: 1px solid var(--line);
+      overflow: hidden;
+    }
+
+    .split-bar .operator {
+      width: 85%;
+      background: var(--good);
+    }
+
+    .split-bar .venue {
+      width: 15%;
+      background: var(--accent);
+    }
+
+    .note {
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    footer {
+      margin-top: 3rem;
+      padding-top: 1.25rem;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>tiny photo booth</h1>
+      <p class="lede">A wall-mounted photo strip machine for dive bars — tap, pose, print.</p>
+    </header>
+
+    <img
+      class="hero"
+      src="img/v1-updated.png"
+      alt="tiny photo booth mounted on a bar wall, printing a black-and-white photo strip"
+      width="1448"
+      height="1086"
+    />
+
+    <section id="product">
+      <h2>The product</h2>
+      <p>
+        tiny photo booth is a compact, wall-mounted unit that takes four photos and prints a
+        black-and-white strip on the spot. Built for bars: small footprint, fast print, auto-cut,
+        and a one-button flow that fits the room without a full rental booth.
+      </p>
+      <p>
+        Guests see sample strips and a clear price, press Start, pay on a certified card reader,
+        then get a countdown and a cut thermal strip in hand. No ink cartridges, no attendant,
+        no floor space eaten by a trailer booth — just a glowing frame on the wall and a strip
+        worth keeping for the night.
+      </p>
+      <p>
+        V1 prints on 80&nbsp;mm thermal paper (~2.8 × 8&nbsp;in strip) with a grainy photo-booth look.
+        Price point: <strong>$5</strong> per strip.
+      </p>
+    </section>
+
+    <section id="build">
+      <h2>V1 build manifest</h2>
+      <p class="note">Core stack for a working tiny photo booth that can survive real bar use.</p>
+      <table>
+        <thead>
+          <tr>
+            <th>Part</th>
+            <th>Choice</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Computer</td>
+            <td>Raspberry Pi 5 (4&nbsp;GB)</td>
+          </tr>
+          <tr>
+            <td>Camera</td>
+            <td>Raspberry Pi Camera Module 3</td>
+          </tr>
+          <tr>
+            <td>Display</td>
+            <td>5–7&quot; non-touch HDMI screen</td>
+          </tr>
+          <tr>
+            <td>Printer</td>
+            <td>Epson TM-T20 (USB, auto-cutter, 80&nbsp;mm)</td>
+          </tr>
+          <tr>
+            <td>Payment</td>
+            <td>Stripe Reader S700</td>
+          </tr>
+          <tr>
+            <td>Controls</td>
+            <td>Illuminated Start + Cancel buttons</td>
+          </tr>
+          <tr>
+            <td>Lighting</td>
+            <td>Photo LEDs + decorative perimeter strip (MOSFET-switched)</td>
+          </tr>
+          <tr>
+            <td>Software</td>
+            <td>Python kiosk app (Picamera2, Pillow, Pygame, python-escpos, Stripe)</td>
+          </tr>
+          <tr>
+            <td>Build budget</td>
+            <td>~$680–1,060 complete / ~$350–650 bench prototype</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="pricing">
+      <h2>Venue split</h2>
+      <p>
+        Each $5 strip is split so the bar hosts the machine and the operator runs the fleet.
+      </p>
+      <div class="split-bar" aria-hidden="true">
+        <div class="operator" title="Operator 85%"></div>
+        <div class="venue" title="Bar 15%"></div>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Party</th>
+            <th>Share</th>
+            <th>Per $5 strip</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Operator</td>
+            <td>85%</td>
+            <td>$4.25</td>
+          </tr>
+          <tr>
+            <td>Bar / venue</td>
+            <td>15%</td>
+            <td>$0.75</td>
+          </tr>
+          <tr>
+            <td>Guest price</td>
+            <td>100%</td>
+            <td>$5.00</td>
+          </tr>
+        </tbody>
+      </table>
+      <p class="note" style="margin-top: 0.85rem;">
+        Card processing (Stripe Terminal, ~2.7% + 5¢) comes out of the operator side before net.
+      </p>
+    </section>
+
+    <footer>tiny photo booth</footer>
+  </div>
+</body>
+</html>

@@ -17,6 +17,56 @@
       --rule: 1px solid var(--line);
     }
     * { box-sizing: border-box; }
+
+    .site-nav {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 0.65rem 1.125rem;
+      background: rgba(26, 23, 20, 0.94);
+      border-bottom: var(--rule);
+      backdrop-filter: blur(8px);
+    }
+
+    .site-nav .brand {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--ink);
+      text-decoration: none;
+      letter-spacing: -0.02em;
+    }
+
+    .site-nav .links {
+      display: flex;
+      gap: 0.35rem;
+      flex-wrap: wrap;
+    }
+
+    .site-nav .links a {
+      padding: 0.35rem 0.75rem;
+      border: var(--rule);
+      background: var(--panel);
+      color: var(--muted);
+      font-size: 0.88rem;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .site-nav .links a:hover {
+      color: var(--ink);
+      border-color: var(--accent);
+    }
+
+    .site-nav .links a[aria-current="page"] {
+      color: var(--bg);
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+
     body {
       margin: 0;
       font: 16px/1.45 "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
@@ -200,6 +250,13 @@
   </style>
 </head>
 <body>
+  <nav class="site-nav" aria-label="Site">
+    <a class="brand" href="../">tiny photo booth</a>
+    <div class="links">
+      <a href="../">Overview</a>
+      <a href="./" aria-current="page">Casing study</a>
+    </div>
+  </nav>
   <header>
     <h1>tiny photo booth — V1 casing spacing</h1>
     <p>

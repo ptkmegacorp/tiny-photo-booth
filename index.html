@@ -26,6 +26,55 @@
 
     html { scroll-behavior: smooth; }
 
+    .site-nav {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 0.65rem 1.125rem;
+      background: rgba(250, 246, 239, 0.92);
+      border-bottom: 1px solid var(--line);
+      backdrop-filter: blur(8px);
+    }
+
+    .site-nav .brand {
+      font-family: "DM Serif Display", serif;
+      font-size: 1.05rem;
+      color: var(--ink);
+      text-decoration: none;
+      letter-spacing: -0.02em;
+    }
+
+    .site-nav .links {
+      display: flex;
+      gap: 0.35rem;
+      flex-wrap: wrap;
+    }
+
+    .site-nav .links a {
+      padding: 0.35rem 0.75rem;
+      border: 1px solid var(--line);
+      background: var(--panel);
+      color: var(--muted);
+      font-size: 0.88rem;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .site-nav .links a:hover {
+      color: var(--ink);
+      border-color: var(--wood);
+    }
+
+    .site-nav .links a[aria-current="page"] {
+      color: var(--panel);
+      background: var(--ink);
+      border-color: var(--ink);
+    }
+
     body {
       margin: 0;
       color: var(--ink);
@@ -288,6 +337,13 @@
   </style>
 </head>
 <body>
+  <nav class="site-nav" aria-label="Site">
+    <a class="brand" href="./">tiny photo booth</a>
+    <div class="links">
+      <a href="./" aria-current="page">Overview</a>
+      <a href="casing-study/">Casing study</a>
+    </div>
+  </nav>
   <div class="wrap">
     <header>
       <h1>tiny photo booth</h1>

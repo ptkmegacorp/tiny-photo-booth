@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>tiny photo booth — V1 casing spacing study</title>
+  <style>
+    :root {
+      --bg: #1a1714;
+      --panel: #26211c;
+      --ink: #f2ebe1;
+      --muted: #b5a898;
+      --line: #4a4036;
+      --accent: #e8c27a;
+      --warn: #e07a5f;
+      --ok: #7dcea0;
+      --rule: 1px solid var(--line);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font: 16px/1.45 "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+      color: var(--ink);
+      background:
+        radial-gradient(ellipse at 20% 0%, #2c241c 0%, transparent 45%),
+        radial-gradient(ellipse at 90% 10%, #1f2a28 0%, transparent 40%),
+        var(--bg);
+    }
+    header {
+      padding: 2.5rem 1.5rem 1.5rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    header h1 {
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      margin: 0 0 0.4rem;
+    }
+    header p { color: var(--muted); max-width: 62ch; margin: 0; }
+    .verdict {
+      margin-top: 1.25rem;
+      padding: 1rem 1.15rem;
+      border: var(--rule);
+      border-left: 4px solid var(--accent);
+      background: rgba(232, 194, 122, 0.08);
+      max-width: 70ch;
+    }
+    .verdict strong { color: var(--accent); }
+    main { max-width: 1100px; margin: 0 auto; padding: 0 1.5rem 4rem; }
+    section { margin-top: 2.75rem; }
+    h2 {
+      font-size: 1.35rem;
+      margin: 0 0 0.75rem;
+      font-weight: 600;
+    }
+    h3 { font-size: 1.05rem; margin: 1.25rem 0 0.5rem; color: var(--accent); }
+    .lede { color: var(--muted); margin: 0 0 1rem; max-width: 70ch; }
+    .grid {
+      display: grid;
+      gap: 1rem;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    }
+    .card {
+      background: var(--panel);
+      border: var(--rule);
+      overflow: hidden;
+    }
+    .card figcaption {
+      padding: 0.7rem 0.85rem 0.9rem;
+      font-size: 0.92rem;
+    }
+    .card .dims {
+      display: block;
+      color: var(--accent);
+      font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+      font-size: 0.82rem;
+      margin-top: 0.25rem;
+    }
+    .card .note { color: var(--muted); font-size: 0.85rem; margin-top: 0.35rem; }
+    .card img {
+      display: block;
+      width: 100%;
+      height: 200px;
+      object-fit: contain;
+      background: #111;
+      padding: 0.5rem;
+    }
+    .card .placeholder {
+      height: 200px;
+      background: #111;
+      padding: 1.6rem;
+      display: grid;
+      place-items: center;
+    }
+    .card .placeholder svg { height: 100%; width: auto; }
+    .hero-row {
+      display: grid;
+      gap: 1rem;
+      grid-template-columns: 1.4fr 1fr;
+    }
+    @media (max-width: 800px) {
+      .hero-row { grid-template-columns: 1fr; }
+    }
+    .hero-row img {
+      width: 100%;
+      height: auto;
+      display: block;
+      border: var(--rule);
+      background: #111;
+    }
+    .scale {
+      background: var(--panel);
+      border: var(--rule);
+      padding: 1rem;
+      overflow-x: auto;
+    }
+    .scale svg { display: block; width: 100%; min-width: 680px; height: auto; }
+    /* Portrait diagrams must not stretch to container width — they get absurdly tall. */
+    .scale.portrait { overflow-x: visible; }
+    .scale.portrait svg {
+      width: 100%;
+      min-width: 0;
+      max-width: 420px;
+      margin: 0 auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+      background: var(--panel);
+      border: var(--rule);
+    }
+    th, td {
+      text-align: left;
+      padding: 0.65rem 0.75rem;
+      border-bottom: var(--rule);
+      vertical-align: top;
+    }
+    th { color: var(--accent); font-weight: 600; font-size: 0.85rem; }
+    td.num {
+      font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+      white-space: nowrap;
+      color: var(--ok);
+    }
+    td.warn { color: var(--warn); }
+    td.price {
+      font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+      text-align: right;
+      white-space: nowrap;
+      color: var(--ok);
+    }
+    td.price.est { color: var(--muted); }
+    th.right { text-align: right; }
+    tr.group td {
+      background: #322a23;
+      color: var(--accent);
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    tr.total td { background: rgba(232, 194, 122, 0.07); font-weight: 600; }
+    tr.total td.price { color: var(--accent); }
+    table.bom .src { font-size: 0.85rem; }
+    table.bom .sub { color: var(--muted); font-size: 0.85rem; display: block; margin-top: 0.15rem; }
+    .note-inline {
+      border: var(--rule);
+      border-left: 3px solid var(--ok);
+      background: rgba(125, 206, 160, 0.07);
+      padding: 0.8rem 1rem;
+      margin: 0 0 1.25rem;
+      font-size: 0.92rem;
+      max-width: 78ch;
+    }
+    .note-inline b { color: var(--ok); }
+    .tag {
+      display: inline-block;
+      font-size: 0.75rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--bg);
+      background: var(--accent);
+      padding: 0.15rem 0.45rem;
+      margin-right: 0.4rem;
+    }
+    .tag.bad { background: var(--warn); }
+    .tag.ok { background: var(--ok); color: #122018; }
+    ul.clearances { color: var(--muted); padding-left: 1.2rem; }
+    ul.clearances li { margin: 0.35rem 0; }
+    ul.clearances b { color: var(--ink); }
+    footer {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 1.5rem 3rem;
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+    a { color: var(--accent); }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>tiny photo booth — V1 casing spacing</h1>
+    <p>
+      Visual study of the minimal V1 build (mockup + real BOM parts) and the
+      clearances a wall-mounted shell actually needs. Printer depth is the
+      controlling dimension — not the shallow face the mockup suggests.
+    </p>
+    <div class="verdict">
+      <span class="tag bad">key judgment</span>
+      For a <strong>DS620A / CS2 inside the box</strong>, plan an external shell about
+      <strong>13″ W × 16–17″ D × 19–23″ H</strong> (or a shallow UI face + deeper printer bay).
+      The mockup’s ~4–6″ depth is face-only fiction; dye-sub needs ~14.5″ machine depth
+      plus cable, chute, and service clearance.
+    </div>
+    <div class="verdict">
+      <span class="tag ok">v1 payment</span>
+      V1 takes payment by <strong>QR code rendered on the booth’s own screen</strong> —
+      the guest scans and pays on their phone. That removes the card-reader cradle
+      entirely, freeing <strong>~3″ of face height</strong> and one cutout.
+      A physical <strong>Stripe Reader S700</strong> is the expected upgrade later;
+      leave face room for it (see §7).
+    </div>
+  </header>
+
+  <main>
+    <section>
+      <h2>1. Our V1 look (project mockups)</h2>
+      <p class="lede">
+        Face layout to preserve: perimeter LED, centered camera, landscape screen,
+        start/cancel controls, bottom strip exit. Keep this as the <em>guest face</em>;
+        put the printer in a deeper volume behind/below.
+      </p>
+      <div class="hero-row">
+        <figure>
+          <img src="img/v1-mockup.png" alt="V1 updated mockup — wall-mounted booth with LED ring and photo strip" />
+        </figure>
+        <figure>
+          <img src="img/v1-mockup-alt.jpeg" alt="Earlier tiny photo booth mockup on wood bar wall" />
+        </figure>
+      </div>
+    </section>
+
+    <section>
+      <h2>2. Real V1 parts (reference photos)</h2>
+      <p class="lede">
+        Sourced from dealer / manufacturer product pages for the cheap-V1 and wall-mount manifests.
+      </p>
+      <div class="note-inline">
+        <b>Strip format verified 2026-07-31.</b> Both the DS620A and the CS2 cut the classic
+        2×6 four-frame strip from 4×6 media — DNP’s own
+        <a href="https://dnpphoto.com/Portals/0/Resources/FAQ_17_DS_HowToEnable2InchCutsInWindows.pdf">FAQ 17</a>
+        documents the 2-inch cut, and the
+        <a href="https://www.sinfoniaphoto.com/wp-content/uploads/2023/05/cs2-brochure-5.pdf">CS2 brochure</a>
+        lists 2×6 strips as a paper size. On a Raspberry Pi, though, the DS620A is the safer
+        driver path: Gutenprint cuts its strips with <code>PageSize=w288h432-div2</code> and needs
+        nothing extra, while the CS2 cannot print at all without Sinfonia’s
+        <code>libS6145ImageProcess</code>, which is x86-only — on ARM you depend on the GPL
+        <a href="https://git.shaftnet.org/gitea/slp/selphy_print">re-implementation</a>.
+        Note also: DNP’s 2-inch cut is a printer-level mode, so while it is on, <em>every</em>
+        print comes out as strips.
+      </div>
+      <div class="grid">
+        <figure class="card">
+          <img src="img/strip.jpg" alt="Glossy 2×6 photo strip with four stacked frames" />
+          <figcaption>
+            The output <span class="tag ok">this is the product</span>
+            <span class="dims">2″ W × 6″ H · four vertical frames per strip</span>
+            <div class="note">
+              One long glossy strip, four photos stacked top to bottom — the classic
+              wedding-booth keepsake. The printer prints and cuts <b>two complete strips
+              from each 4×6 sheet</b>. Everything below is sized to deliver this.
+            </div>
+          </figcaption>
+        </figure>
+        <figure class="card">
+          <img src="img/ds620a-main.jpg" alt="DNP DS620A dye-sub printer" />
+          <figcaption>
+            DNP DS620A <span class="tag ok">wall pick</span>
+            <span class="dims">10.8″ W × 14.4″ D × 6.7″ H · ~26 lb</span>
+            <div class="note">
+              Prints and cuts two 2×6 four-frame strips per 4×6 sheet.
+              Preferred wall printer — fastest / shallowest of the three.
+            </div>
+          </figcaption>
+        </figure>
+        <figure class="card">
+          <img src="img/cs2-main.jpg" alt="Sinfonia CS2 dye-sub printer" />
+          <figcaption>
+            Sinfonia CS2 <span class="tag">cheapest real strips</span>
+            <span class="dims">10.7″ W × 13.82″ D × 6.61″ H · ~22 lb</span>
+            <div class="note">
+              Same 2×6 auto-cut strips. Almost same bay as DS620A; slightly shorter depth.
+            </div>
+          </figcaption>
+        </figure>
+        <figure class="card">
+          <img src="img/rx1hs.jpg" alt="DNP DS-RX1HS dye-sub printer" />
+          <figcaption>
+            DNP DS-RX1HS <span class="tag">capacity</span>
+            <span class="dims">12.6″ W × 13.8″ D × 11.0″ H · ~30 lb</span>
+            <div class="note">Needs a taller / wider bay; avoid for slim wall V1.</div>
+          </figcaption>
+        </figure>
+        <figure class="card">
+          <div class="placeholder" role="img" aria-label="QR code shown on the booth screen">
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+              <rect width="100" height="100" fill="#f2ebe1"/>
+              <g fill="#111">
+                <path d="M10 10h26v26H10zm6 6v14h14V16z"/>
+                <path d="M64 10h26v26H64zm6 6v14h14V16z"/>
+                <path d="M10 64h26v26H10zm6 6v14h14V70z"/>
+                <rect x="44" y="10" width="6" height="6"/><rect x="50" y="22" width="6" height="6"/>
+                <rect x="44" y="34" width="6" height="6"/><rect x="56" y="10" width="6" height="6"/>
+                <rect x="44" y="44" width="6" height="6"/><rect x="56" y="44" width="6" height="6"/>
+                <rect x="68" y="44" width="6" height="6"/><rect x="80" y="44" width="6" height="6"/>
+                <rect x="10" y="44" width="6" height="6"/><rect x="22" y="44" width="6" height="6"/>
+                <rect x="44" y="56" width="6" height="6"/><rect x="44" y="68" width="6" height="6"/>
+                <rect x="44" y="80" width="6" height="6"/><rect x="56" y="64" width="6" height="6"/>
+                <rect x="68" y="72" width="6" height="6"/><rect x="80" y="64" width="6" height="6"/>
+                <rect x="64" y="84" width="6" height="6"/><rect x="76" y="84" width="6" height="6"/>
+              </g>
+            </svg>
+          </div>
+          <figcaption>
+            Payment: QR on screen <span class="tag ok">v1 · no hardware</span>
+            <span class="dims">~2″ square minimum · rendered on the existing display</span>
+            <div class="note">
+              No cradle, no cutout, no extra device. Dim the perimeter LED while the QR
+              is up or the screen washes out under bar lighting.
+            </div>
+          </figcaption>
+        </figure>
+        <figure class="card">
+          <img src="img/s700-dock.png" alt="Stripe Reader S700 with dock" />
+          <figcaption>
+            Stripe Reader S700 <span class="tag">later — not v1</span>
+            <span class="dims">6.38″ × 3.19″ × 0.87″ (162 × 82 × 21 mm)</span>
+            <div class="note">
+              The expected upgrade once volume justifies it. Needs a recessed cradle
+              pocket ~180 × 100 × 40 mm plus a drip lip — not liquid-proof.
+            </div>
+          </figcaption>
+        </figure>
+        <figure class="card">
+          <img src="img/pi5.jpg" alt="Raspberry Pi 5" />
+          <figcaption>
+            Raspberry Pi 5 / 4
+            <span class="dims">board ~3.35″ × 2.2″ (85 × 56 mm)</span>
+            <div class="note">Mount on rear plate; leave USB/HDMI bend room.</div>
+          </figcaption>
+        </figure>
+        <figure class="card">
+          <img src="img/cam3.jpg" alt="Raspberry Pi Camera Module 3" />
+          <figcaption>
+            Camera Module 3
+            <span class="dims">25 × 24 × 11.5 mm</span>
+            <div class="note">Tiny — but needs clear cone + LED ring diffuser stack.</div>
+          </figcaption>
+        </figure>
+        <figure class="card">
+          <img src="img/waveshare5.jpg" alt="Waveshare 5 inch HDMI LCD" />
+          <figcaption>
+            Waveshare 5″ HDMI <span class="tag ok">required in v1</span>
+            <span class="dims">viewable ~5″ diag · board ~4.8″ × 3.1″</span>
+            <div class="note">
+              No longer optional — it renders the payment QR as well as the countdown.
+              5″ fits a tighter face; 7″ scans more reliably at arm’s length.
+            </div>
+          </figcaption>
+        </figure>
+        <figure class="card">
+          <img src="img/arcade-btn.jpg" alt="Illuminated arcade button" />
+          <figcaption>
+            Illuminated Start / Cancel
+            <span class="dims">~30 mm mount hole · ~35–40 mm pitch</span>
+            <div class="note">Two buttons; keep 0.6″+ edge from LED channel.</div>
+          </figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section>
+      <h2>3. Scale reality check — mockup face vs printer body</h2>
+      <p class="lede">
+        Side view at ~10 px / inch. The gold outline is the guest face the mockup implies;
+        the white block is a DS620A. Depth is the hard problem.
+      </p>
+      <div class="scale">
+        <svg viewBox="0 0 920 340" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Side-view scale comparison of mockup depth versus DS620A">
+          <defs>
+            <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+              <path d="M20 0H0V20" fill="none" stroke="#3a322a" stroke-width="1"/>
+            </pattern>
+          </defs>
+          <rect width="920" height="340" fill="#1e1a16"/>
+          <rect x="40" y="40" width="840" height="240" fill="url(#grid)" stroke="#4a4036"/>
+
+          <!-- wall -->
+          <rect x="60" y="40" width="14" height="240" fill="#6b5344"/>
+          <text x="67" y="300" fill="#b5a898" font-size="12" font-family="Georgia, serif" text-anchor="middle" transform="rotate(-90 67 300)">wall / studs</text>
+
+          <!-- mockup shallow face (assumed ~5" deep, ~20" tall) -->
+          <rect x="74" y="70" width="50" height="200" fill="none" stroke="#e8c27a" stroke-width="3"/>
+          <text x="99" y="60" fill="#e8c27a" font-size="13" font-family="Georgia, serif" text-anchor="middle">mockup face ≈ 5″ D</text>
+
+          <!-- DS620A body: 14.4" D × 6.7" H, sitting with depth into room -->
+          <rect x="74" y="150" width="144" height="67" fill="rgba(255,255,255,0.12)" stroke="#f2ebe1" stroke-width="2"/>
+          <text x="146" y="188" fill="#f2ebe1" font-size="14" font-family="ui-monospace, monospace" text-anchor="middle">DS620A 14.4″ D × 6.7″ H</text>
+
+          <!-- required bay including clearances -->
+          <rect x="74" y="130" width="170" height="110" fill="none" stroke="#e07a5f" stroke-width="2" stroke-dasharray="6 4"/>
+          <text x="250" y="145" fill="#e07a5f" font-size="13" font-family="Georgia, serif">needed bay ≈ 17″ D × 11″ H</text>
+          <text x="250" y="163" fill="#b5a898" font-size="12" font-family="Georgia, serif">(+ rails, lid/service, cables, chute)</text>
+
+          <!-- depth dimension arrows -->
+          <line x1="74" y1="280" x2="218" y2="280" stroke="#7dcea0" stroke-width="2"/>
+          <text x="146" y="298" fill="#7dcea0" font-size="12" font-family="ui-monospace, monospace" text-anchor="middle">printer alone 14.4″</text>
+          <line x1="74" y1="315" x2="244" y2="315" stroke="#e07a5f" stroke-width="2"/>
+          <text x="159" y="332" fill="#e07a5f" font-size="12" font-family="ui-monospace, monospace" text-anchor="middle">service bay ~17″</text>
+
+          <text x="700" y="70" fill="#b5a898" font-size="12" font-family="Georgia, serif">scale ≈ 10 px / inch</text>
+        </svg>
+      </div>
+    </section>
+
+    <section>
+      <h2>4. Recommended shell volumes</h2>
+      <p class="lede">
+        Prefer <strong>DS620A</strong> for wall mount. Build as a split shell: cosmetic face + structural rear plate to studs + printer on a slide-out tray.
+      </p>
+
+      <h3>External target (integrated wall cabinet, DS620A)</h3>
+      <table>
+        <thead>
+          <tr><th>Axis</th><th>Inside clear</th><th>Outside (≈)</th><th>Why</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Width</td>
+            <td class="num">11.5–12.0″</td>
+            <td class="num">12.5–13.5″</td>
+            <td>Printer 10.8″ + 0.35–0.5″/side for rails/air + wall thickness</td>
+          </tr>
+          <tr>
+            <td>Depth (from wall)</td>
+            <td class="num">16.0–17.0″</td>
+            <td class="num">16.5–17.5″</td>
+            <td class="warn">14.4″ body + ~1.5–2″ rear cables + front chute lip</td>
+          </tr>
+          <tr>
+            <td>Height</td>
+            <td class="num">17–21″</td>
+            <td class="num">19–23″</td>
+            <td>UI face above printer: camera + 5–7″ screen + buttons + strip zone. No reader cradle in V1 — add ~3″ if you fit an S700 later.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Local clearances (do not skip)</h3>
+      <table>
+        <thead>
+          <tr><th>Zone</th><th>Spacing</th><th>Notes</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Printer sides</td>
+            <td class="num">10–15 mm each</td>
+            <td>Heat + no rattle against shell</td>
+          </tr>
+          <tr>
+            <td>Printer rear</td>
+            <td class="num">50–80 mm</td>
+            <td>AC inlet + USB bend radius</td>
+          </tr>
+          <tr>
+            <td>Printer front / chute</td>
+            <td class="num">40–60 mm beyond exit</td>
+            <td>Strip must fall free; catcher or guest grab</td>
+          </tr>
+          <tr>
+            <td>Printer service</td>
+            <td class="num">full slide-out tray</td>
+            <td>Top-lid media changes are miserable in a wall box — rails win</td>
+          </tr>
+          <tr>
+            <td>Above printer (if fixed)</td>
+            <td class="num">≥ 40 mm vent gap</td>
+            <td>Dye-sub runs hot; vent top/sides</td>
+          </tr>
+          <tr>
+            <td>LED perimeter channel</td>
+            <td class="num">8–12 mm deep</td>
+            <td>COB + diffuser; keep camera optically baffled from glow</td>
+          </tr>
+          <tr>
+            <td>Camera pod</td>
+            <td class="num">~40–50 mm stack</td>
+            <td>Module 3 + optional photo ring + hood</td>
+          </tr>
+          <tr>
+            <td>Screen recess (5–7″)</td>
+            <td class="num">15–25 mm + cable loop</td>
+            <td class="warn">HDMI/power bend behind panel. Keep the recess shallow — a deep bezel shadows the QR and phones fail to scan.</td>
+          </tr>
+          <tr>
+            <td>Arcade buttons</td>
+            <td class="num">35–40 mm centers · ≥15 mm to edge</td>
+            <td>Keep clear of LED channel & screen bezel</td>
+          </tr>
+          <tr>
+            <td>Reader cradle</td>
+            <td class="num">none in V1</td>
+            <td>QR on screen. Reserve ~180 × 100 × 40 mm below the branding band if you add an S700 later.</td>
+          </tr>
+          <tr>
+            <td>Pi / PSU bay</td>
+            <td class="num">~120 × 90 × 50 mm</td>
+            <td>Separate from printer heat path; strain-relief USB to printer</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>5. Front-face spacing (match the mockup)</h2>
+      <p class="lede">
+        Guest-face layout for a 13″-wide shell using a 5″ screen. With QR payment the
+        screen is the only interactive surface, so the face loses the cradle band and
+        drops from ~24″ to ~21″ tall.
+      </p>
+      <div class="scale portrait">
+        <svg viewBox="0 0 520 700" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Front face spacing diagram for the QR-payment V1">
+          <rect width="520" height="700" fill="#1e1a16"/>
+          <!-- outer shell 13" W x 21" H at 30 px/in => 390 x 630 -->
+          <rect x="65" y="25" width="390" height="630" rx="36" fill="#2a2520" stroke="#e8c27a" stroke-width="3"/>
+          <!-- LED channel -->
+          <rect x="77" y="37" width="366" height="606" rx="30" fill="none" stroke="#f2ebe1" stroke-width="6" opacity="0.35"/>
+
+          <!-- camera -->
+          <circle cx="260" cy="95" r="18" fill="#111" stroke="#f2ebe1" stroke-width="2"/>
+          <text x="260" y="133" fill="#b5a898" font-size="13" text-anchor="middle" font-family="Georgia, serif">camera · top margin ~1.5–2″</text>
+
+          <!-- screen 5" landscape ~4.3x2.6" -> 130x78 at 30px/in -->
+          <rect x="195" y="158" width="130" height="78" fill="#111" stroke="#7dcea0" stroke-width="2"/>
+          <!-- QR shown on screen during payment -->
+          <rect x="230" y="167" width="60" height="60" fill="#f2ebe1"/>
+          <g fill="#111">
+            <path d="M234 171h16v16h-16zm4 4v8h8v-8z"/>
+            <path d="M270 171h16v16h-16zm4 4v8h8v-8z"/>
+            <path d="M234 207h16v16h-16zm4 4v8h8v-8z"/>
+            <rect x="256" y="171" width="4" height="4"/><rect x="260" y="179" width="4" height="4"/>
+            <rect x="256" y="187" width="4" height="4"/><rect x="268" y="195" width="4" height="4"/>
+            <rect x="256" y="203" width="4" height="4"/><rect x="278" y="203" width="4" height="4"/>
+            <rect x="264" y="211" width="4" height="4"/><rect x="276" y="215" width="4" height="4"/>
+          </g>
+          <text x="260" y="252" fill="#7dcea0" font-size="12" text-anchor="middle" font-family="ui-monospace, monospace">5″ screen — QR during payment</text>
+
+          <!-- buttons -->
+          <circle cx="358" cy="176" r="14" fill="#e07a5f"/>
+          <circle cx="358" cy="220" r="14" fill="#4a4036" stroke="#e8c27a" stroke-width="2"/>
+          <text x="378" y="180" fill="#e07a5f" font-size="11" font-family="Georgia, serif">START</text>
+          <text x="378" y="224" fill="#e8c27a" font-size="11" font-family="Georgia, serif">CANCEL</text>
+
+          <!-- branding gap -->
+          <text x="260" y="287" fill="#e8c27a" font-size="18" text-anchor="middle" font-family="Georgia, serif">tiny photo booth</text>
+
+          <!-- reserved band where the S700 would later go -->
+          <rect x="168" y="303" width="184" height="34" rx="6" fill="none" stroke="#4a4036" stroke-width="2" stroke-dasharray="5 4"/>
+          <text x="260" y="325" fill="#b5a898" font-size="11" text-anchor="middle" font-family="ui-monospace, monospace">reserved: S700 cradle (v2)</text>
+
+          <!-- printer bay hint -->
+          <rect x="95" y="358" width="330" height="190" fill="rgba(224,122,95,0.12)" stroke="#e07a5f" stroke-width="2" stroke-dasharray="6 4"/>
+          <text x="260" y="440" fill="#e07a5f" font-size="14" text-anchor="middle" font-family="Georgia, serif">printer bay behind / below</text>
+          <text x="260" y="463" fill="#b5a898" font-size="12" text-anchor="middle" font-family="ui-monospace, monospace">inside ≥ 11.5″ W × 8.5″ H clear</text>
+
+          <!-- chute -->
+          <rect x="210" y="588" width="100" height="14" fill="#111" stroke="#f2ebe1" stroke-width="2"/>
+          <text x="260" y="623" fill="#f2ebe1" font-size="12" text-anchor="middle" font-family="Georgia, serif">strip exit · keep ≥ 0.5″ below branding</text>
+        </svg>
+      </div>
+      <ul class="clearances">
+        <li><b>Top → camera:</b> 1.5–2″ so the LED corner radius doesn’t vignette faces.</li>
+        <li><b>Camera → screen:</b> ~1–1.5″; enough for cable and a small photo-light bar.</li>
+        <li><b>QR size on screen:</b> render at <b>≥ 2″ square</b>. A 5″ panel handles that with room for a
+          “Scan to pay $5” caption; a 7″ makes it comfortable at arm’s length.</li>
+        <li><b>Screen height:</b> ~48–56″ AFF. The guest scans it standing, phone at chest height —
+          too low and they crouch, too high and the glass catches ceiling lights.</li>
+        <li><b>LED vs. QR:</b> drop the perimeter LED to a low level while the QR is displayed.
+          Full-brightness glow around a screen is the main reason kiosk QRs fail to scan.</li>
+        <li><b>Strip slot height:</b> aim ~36–42″ AFF for standing bar patrons if the whole unit is one cabinet.</li>
+        <li><b>Reserved band:</b> keep ~3″ between branding and printer bay unused, so an S700
+          cradle can be cut in later without re-lofting the whole face.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>6. Practical build recommendation</h2>
+      <ul class="clearances">
+        <li><b>Do not chase the mockup’s shallow depth</b> if the dye-sub lives in the same box. Guests see a slim face; the wall sees a ~17″ deep cabinet.</li>
+        <li><b>Best V1 casing type:</b> stud-mounted rear chassis + slide-out printer tray + removable front cosmetic shell (PETG/ASA panels).</li>
+        <li><b>Pick DS620A or CS2</b> for width/height; skip RX1HS unless you accept a visibly bulkier wall box.</li>
+        <li><b>QR payment simplifies the face:</b> one screen cutout, two buttons, one chute. No cradle, no drip lip, no second powered device in the shell.</li>
+        <li><b>Service spacing beats cosmetics:</b> if the printer can’t slide out, the unit will never get media changes in a dive bar.</li>
+        <li><b>Weight:</b> printer alone 22–26 lb — cosmetic shell must not carry it; steel/ply rear plate to studs.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>7. Payment: why QR now, S700 later</h2>
+      <p class="lede">
+        V1 ships with no payment hardware. That is the right call for a first unit, but it
+        costs more per sale and adds a failure mode the booth cannot control.
+      </p>
+      <table>
+        <thead>
+          <tr><th></th><th>V1 — QR on screen</th><th>V2 — Stripe Reader S700</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Hardware</td>
+            <td class="num">$0</td>
+            <td class="num">$299</td>
+          </tr>
+          <tr>
+            <td>Fee on a $5 sale</td>
+            <td class="warn">44.5¢ &nbsp;<small>(2.9% + 30¢ online)</small></td>
+            <td class="num">18.5¢ &nbsp;<small>(2.7% + 5¢ card-present)</small></td>
+          </tr>
+          <tr>
+            <td>Face impact</td>
+            <td class="num">none — uses the screen</td>
+            <td>~3″ band + 180 × 100 × 40 mm pocket</td>
+          </tr>
+          <tr>
+            <td>Guest needs</td>
+            <td class="warn">a phone with working signal</td>
+            <td class="num">a card in their hand</td>
+          </tr>
+          <tr>
+            <td>Time to pay</td>
+            <td class="warn">~20–40 s (scan, load, confirm)</td>
+            <td class="num">~3 s (tap)</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>When to switch</h3>
+      <ul class="clearances">
+        <li><b>The money trigger:</b> the S700 saves <b>26¢ per session</b>, so $299 of hardware
+          pays for itself at roughly <b>1,150 sessions</b> — about 14 months at 20 sessions/week,
+          or 7 months at 40. Past that the reader is pure margin.</li>
+        <li><b>The real trigger is signal, not math.</b> QR payment depends on the
+          <em>guest’s</em> phone getting data inside the bar. In a basement room with dead
+          cell coverage, every sale fails and you never find out why. The booth’s own
+          network is irrelevant — it can be on solid ethernet and still take zero money.
+          Check bars for signal before promising QR-only.</li>
+        <li><b>Drunk-guest friction is real:</b> 30 seconds of scanning and typing at 1 a.m.
+          converts worse than a tap. Expect QR to lose sales a reader would have caught.</li>
+        <li><b>Build for the swap now:</b> keep the reserved band in §5 empty and run a spare
+          power lead to it. Retrofitting a cradle into a finished face means re-cutting the
+          front panel.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>8. Build pricing manifest</h2>
+      <p class="lede">
+        Every line item for one unit. Dealer prices checked <strong>2026-07-24</strong>, USD,
+        before shipping and tax. Green figures are sourced from a linked vendor page; grey
+        figures are <em>estimates</em> for commodity parts we have not committed to a supplier on.
+      </p>
+
+      <h3>Printer — pick one</h3>
+      <table class="bom">
+        <thead>
+          <tr><th>Part</th><th>Why</th><th class="right">Price</th><th>Source</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>DNP DS620A
+              <span class="sub">10.8 × 14.4 × 6.7″ · ~28 lb</span></td>
+            <td>Wall pick — shallowest, fastest (~8.3 s), cleanest Pi driver path</td>
+            <td class="price">$984.50–999</td>
+            <td class="src">
+              <a href="https://pfsny.com/dnp-ds620a-dye-sub-printer-for-photo-booths-and-events">PFSNY</a> ·
+              <a href="https://www.fotoclubinc.com/products/DNP-DS620A-Dye-Sub-Photo-Printer__DS620ASET.aspx">FotoClub</a>
+            </td>
+          </tr>
+          <tr>
+            <td>Sinfonia CS2 (CHC-S6145)
+              <span class="sub">10.7 × 13.82 × 6.61″ · ~22 lb</span></td>
+            <td class="warn">Cheapest real strips, but needs the x86-only Sinfonia image library or a GPL rebuild on ARM</td>
+            <td class="price">$675</td>
+            <td class="src">
+              <a href="https://eventprinters.com/products/sinfonia-cs2-printer">EventPrinters</a> ·
+              <a href="https://desktopdarkroom.com/sinfonia-cs2-compact-photo-printer">Desktop Darkroom</a>
+            </td>
+          </tr>
+          <tr>
+            <td>DNP DS-RX1HS
+              <span class="sub">12.6 × 13.8 × 11.0″ · ~30 lb</span></td>
+            <td>700 prints/roll — fewest reloads, but a visibly bulkier wall box</td>
+            <td class="price">$695</td>
+            <td class="src">
+              <a href="https://eventprinters.com/products/dnp-ds-rx1hs-photo-printer">EventPrinters</a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Consumables, compute and guest interface</h3>
+      <table class="bom">
+        <thead>
+          <tr><th>Part</th><th>Role</th><th class="right">Price</th><th>Source</th></tr>
+        </thead>
+        <tbody>
+          <tr class="group"><td colspan="4">Media</td></tr>
+          <tr>
+            <td>DS620A 4×6 media kit
+              <span class="sub">800 sheets → up to 1,600 strips 2-up</span></td>
+            <td>~$0.08–0.09 of media per strip</td>
+            <td class="price">$123.85–145</td>
+            <td class="src"><a href="https://eventprinters.com/products/dnp-ds620a-4x6-media">EventPrinters</a></td>
+          </tr>
+          <tr>
+            <td>CS2 4×6 media kit
+              <span class="sub">300 sheets per load</span></td>
+            <td>Only if you take the CS2 path</td>
+            <td class="price est">~$120</td>
+            <td class="src">CS2 dealer media</td>
+          </tr>
+
+          <tr class="group"><td colspan="4">Compute + capture</td></tr>
+          <tr>
+            <td>Raspberry Pi 4 Model B, 2 GB</td>
+            <td>Runs the UI, composes the dual-strip 4×6, drives the printer over USB</td>
+            <td class="price">$54.99</td>
+            <td class="src"><a href="https://www.microcenter.com/product/621439/raspberry-pi-4-model-b-2gb-ddr4">Micro Center</a></td>
+          </tr>
+          <tr>
+            <td>Raspberry Pi Camera Module 3 (standard)</td>
+            <td>12 MP autofocus, Picamera2</td>
+            <td class="price">$29.25</td>
+            <td class="src"><a href="https://www.adafruit.com/product/5657">Adafruit #5657</a></td>
+          </tr>
+          <tr>
+            <td>Official Pi USB-C 15 W PSU</td>
+            <td>Pi power — separate supply from printer and LEDs</td>
+            <td class="price">$8.74</td>
+            <td class="src"><a href="https://www.adafruit.com/product/4298">Adafruit #4298</a></td>
+          </tr>
+          <tr>
+            <td>SanDisk High Endurance 64 GB microSD</td>
+            <td>OS, temp photos, failed-job queue</td>
+            <td class="price">$26.99</td>
+            <td class="src"><a href="https://www.adorama.com/sandisk-high-endurance-64gb-microsdxc-memory-card-uhs-i-v30/p/idshd64gb">Adorama</a></td>
+          </tr>
+
+          <tr class="group"><td colspan="4">Guest interface</td></tr>
+          <tr>
+            <td>Waveshare 5″ HDMI LCD</td>
+            <td>Preview, countdown, <b>and the payment QR</b> — not optional in V1</td>
+            <td class="price">$34.99</td>
+            <td class="src"><a href="https://www.waveshare.com/product/displays/lcd-oled/lcd-oled-1/5inch-hdmi-lcd.htm">Waveshare</a></td>
+          </tr>
+          <tr>
+            <td>2× illuminated arcade buttons + wiring</td>
+            <td>Start / Cancel, ~30 mm mount holes</td>
+            <td class="price">$9.95</td>
+            <td class="src"><a href="https://www.adafruit.com/product/3487">Adafruit #3487</a></td>
+          </tr>
+          <tr class="total">
+            <td colspan="2">Compute + interface subtotal <span class="sub">everything above except printer and media</span></td>
+            <td class="price">$164.91</td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Lighting, power and switching <span class="tag">estimated</span></h3>
+      <table class="bom">
+        <thead>
+          <tr><th>Part</th><th>Role</th><th class="right">Est.</th><th>Notes</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Diffused 12 V LED ring or bar</td>
+            <td>Photo light at the camera — perimeter glow alone will not expose faces</td>
+            <td class="price est">$20–40</td>
+            <td>Fires ~0.5 s before each frame</td>
+          </tr>
+          <tr>
+            <td>12 V COB strip + diffuser</td>
+            <td>Decorative perimeter behind the translucent bezel</td>
+            <td class="price est">$15–30</td>
+            <td>8–12 mm channel; dim it while the QR is up</td>
+          </tr>
+          <tr>
+            <td>12 V 3–5 A PSU</td>
+            <td>LED supply, separate from the Pi</td>
+            <td class="price est">$12–22</td>
+            <td>No custom mains wiring inside the shell</td>
+          </tr>
+          <tr>
+            <td>2-channel logic-level MOSFET board</td>
+            <td>Pi switches photo + decorative lights</td>
+            <td class="price est">$8–12</td>
+            <td class="warn">Never drive 12 V LEDs from GPIO power pins</td>
+          </tr>
+          <tr>
+            <td>5 V active buzzer</td>
+            <td>Countdown ticks and confirm tone</td>
+            <td class="price est">$3–6</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Wire, connectors, strain relief, heat-set inserts, screws</td>
+            <td>Assembly consumables</td>
+            <td class="price est">$20–40</td>
+            <td>Tamper-resistant heads on the outer shell</td>
+          </tr>
+          <tr class="total">
+            <td colspan="2">Subtotal</td>
+            <td class="price est">$78–150</td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Enclosure <span class="tag">estimated</span></h3>
+      <table class="bom">
+        <thead>
+          <tr><th>Part</th><th>Role</th><th class="right">Est.</th><th>Notes</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>PETG / ASA panels</td>
+            <td>Cosmetic face, camera pod, bezel, chute</td>
+            <td class="price est">$35–90</td>
+            <td>Printed or cut to the §4 volumes</td>
+          </tr>
+          <tr>
+            <td>Plywood or steel rear plate + lag bolts</td>
+            <td>Structural mount to studs</td>
+            <td class="price est">$15–35</td>
+            <td class="warn">Carries the full 22–28 lb printer — the shell must not</td>
+          </tr>
+          <tr>
+            <td>Drawer slides for the printer tray</td>
+            <td>Media changes without unmounting the box</td>
+            <td class="price est">$15–35</td>
+            <td>Rate for ≥ 35 lb; skip this and the unit never gets reloaded</td>
+          </tr>
+          <tr class="total">
+            <td colspan="2">Subtotal</td>
+            <td class="price est">$65–160</td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Totals per configuration</h3>
+      <table class="bom">
+        <thead>
+          <tr><th>Configuration</th><th>Printer + media</th><th class="right">Parts total</th><th>Read</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><b>Wall V1 — DS620A</b> <span class="tag ok">recommended</span></td>
+            <td>$1,108–1,144</td>
+            <td class="price">$1,420–1,620</td>
+            <td>Best depth, best speed, no driver risk on the Pi</td>
+          </tr>
+          <tr>
+            <td><b>Cheapest real strips — CS2</b></td>
+            <td>~$795</td>
+            <td class="price">$1,105–1,270</td>
+            <td class="warn">Saves ~$315, spends it back in ARM driver work</td>
+          </tr>
+          <tr>
+            <td>Bench proof-of-concept <span class="sub">printer + media + Pi + camera + screen + buttons, no shell</span></td>
+            <td>—</td>
+            <td class="price">$960–1,309</td>
+            <td>Enough to prove four frames → dual 2×6 → cut strips</td>
+          </tr>
+          <tr class="total">
+            <td>Payment hardware, V1</td>
+            <td>QR on the existing screen</td>
+            <td class="price">$0</td>
+            <td>Software only — see §7</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Later, not V1</h3>
+      <table class="bom">
+        <thead>
+          <tr><th>Part</th><th>Trigger</th><th class="right">Price</th><th>Source</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Stripe Reader S700
+              <span class="sub">6.38 × 3.19 × 0.87″ · needs the reserved face band</span></td>
+            <td>~1,150 sessions of fee savings, or a venue with dead cell signal</td>
+            <td class="price">$299</td>
+            <td class="src"><a href="https://stripe.com/terminal">Stripe Terminal</a></td>
+          </tr>
+          <tr>
+            <td>6×8 double-perf media
+              <span class="sub">three 2×8″ jumbo strips per sheet</span></td>
+            <td>Only if you want a taller keepsake later</td>
+            <td class="price est">~$178 / 400 prints</td>
+            <td class="src">Same dealers as the 4×6 kits</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+  </main>
+
+  <footer>
+    Sources: project <code>v1-architecture.md</code> / <code>cheap-v1-manifest.md</code>;
+    DNP DS620A &amp; RX1HS published dims; Sinfonia CS2 brochure; Stripe S700 product sheet
+    and published Terminal / online processing rates;
+    Adafruit / Waveshare product photography. Local copies under <code>casing-study/img/</code>.
+    Strip-cut verification (2026-07-31): DNP FAQ 17 “Enabling 2-Inch Cuts”, Sinfonia CS2 brochure,
+    and the <a href="https://git.shaftnet.org/gitea/slp/selphy_print">selphy_print</a> /
+    Gutenprint backend documentation. Pricing checked 2026-07-24 against the linked vendor pages;
+    estimated lines are marked and are not quotes.
+  </footer>
+</body>
+</html>

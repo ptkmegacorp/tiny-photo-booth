@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>tiny photo booth</title>
-  <meta name="description" content="tiny photo booth — a wall-mounted black-and-white photo strip machine for dive bars. Press start, pay five bucks, leave with a strip." />
+  <meta name="description" content="tiny photo booth — a wall-mounted dive-bar photo booth that prints real glossy 2×6 photo strips. Press start, pay five bucks, leave with a strip." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -221,13 +221,13 @@
     }
 
     .split-bar .operator {
-      width: 85%;
+      width: 70%;
       background: linear-gradient(90deg, #1a5c44, var(--operator));
       transition: width 0.8s ease;
     }
 
     .split-bar .venue {
-      width: 15%;
+      width: 30%;
       background: linear-gradient(90deg, var(--venue), #e07830);
     }
 
@@ -301,7 +301,7 @@
       <img
         class="hero"
         src="img/v1-updated.png"
-        alt="tiny photo booth mounted on a wood bar wall, LED ring lit, printing a black-and-white four-frame strip"
+        alt="tiny photo booth mounted on a wood bar wall, LED ring lit, printing a four-frame photo strip"
         width="1448"
         height="1086"
       />
@@ -310,28 +310,28 @@
 
     <section id="product">
       <h2>What it is</h2>
-      <p class="section-kicker">Not a rental trailer. Not a wedding booth. A permanent fixture that earns quietly on the wall.</p>
+      <p class="section-kicker">Not a rental trailer. A permanent wall fixture that prints the same glossy strips wedding booths hand out.</p>
       <p>
         tiny photo booth mounts to the studs, glows with a soft perimeter light, and prints
-        classic <span class="highlight">black-and-white four-frame strips</span> on thermal paper —
-        roughly 2.8 × 8 inches, cut automatically, no ink, no attendant.
+        classic <span class="highlight">glossy 2×6" four-frame photo strips</span> on a
+        dye-sublimation printer — real photo paper, cut into keepsakes, no attendant.
       </p>
       <p>
-        It matches the dive-bar aesthetic on purpose: grainy, high-contrast, a little newspaper,
-        a little old-school booth. Guests get a physical souvenir for the night; the bar gets
-        something that doesn’t eat floor space or need a staffer to run it.
+        Same strip format as event booths: four poses stacked on a 2×6, often two copies from
+        one 4×6 sheet. Built for dive bars instead of ballrooms — small footprint, one-button
+        flow, earns on the wall without eating floor space.
       </p>
       <p>
         Guest price is a flat <span class="highlight">$5</span>. One illuminated Start button,
-        a certified card reader for tap / chip / swipe, a short countdown, four shots,
+        a QR code on the screen to pay by phone, a short countdown, four shots,
         and a cut strip in hand.
       </p>
 
       <ol class="flow">
         <li>Idle screen shows sample strips and <strong>$5 — Press Start</strong></li>
-        <li>Guest pays on the Stripe reader (tap, chip, or swipe)</li>
+        <li>Screen shows a QR code; guest scans and pays on their phone</li>
         <li>Photo light comes up; three-second countdown</li>
-        <li>Four frames, composed into a strip, printed and cut</li>
+        <li>Four frames → dual 2×6 layout → dye-sub print and cut</li>
       </ol>
     </section>
 
@@ -356,15 +356,19 @@
           </tr>
           <tr>
             <td>Display</td>
-            <td>5–7&quot; non-touch HDMI — countdown &amp; instructions only</td>
+            <td>5–7&quot; non-touch HDMI — payment QR, countdown &amp; instructions</td>
           </tr>
           <tr>
             <td>Printer</td>
-            <td>Epson TM-T20 (USB, auto-cutter, 80&nbsp;mm thermal)</td>
+            <td>DNP DS620A dye-sub (or Sinfonia CS2 / DNP RX1HS) — glossy 2×6 strips</td>
+          </tr>
+          <tr>
+            <td>Media</td>
+            <td>4×6 dye-sub paper + ribbon; 2-up cut → two 2×6 strips</td>
           </tr>
           <tr>
             <td>Payment</td>
-            <td>Stripe Reader S700 — separate certified device, not DIY NFC</td>
+            <td>QR code → Stripe Checkout, paid on the guest's phone — no reader hardware. A Stripe Reader S700 is the planned upgrade.</td>
           </tr>
           <tr>
             <td>Controls</td>
@@ -376,18 +380,17 @@
           </tr>
           <tr>
             <td>Enclosure</td>
-            <td>~13&quot; W × 21–23&quot; H × 8–10&quot; D, wall plate behind printed shell</td>
+            <td>Wall plate + shell sized for dye-sub bay (DS620A-class depth)</td>
           </tr>
           <tr>
             <td>Build cost</td>
-            <td>~$680–1,060 deployed · ~$350–650 bench prototype</td>
+            <td>~$1,050–1,600 deployed · ~$900–1,200 bench (printer + Pi path)</td>
           </tr>
         </tbody>
       </table>
       <p class="note">
-        Thermal is the V1 compromise: fast, cheap media, auto-cut, and a look that fits the bar.
-        If the machine proves people will pay, a dye-sub printer can replace it later without
-        redesigning the rest of the system.
+        Same print tech wedding booths use: dye-sublimation photo paper and ribbon.
+        Media runs about a few cents per strip once the printer is amortized.
       </p>
     </section>
 
@@ -395,14 +398,19 @@
       <h2>How the money splits</h2>
       <p class="section-kicker">The bar hosts the wall. The operator runs the fleet. Every strip is a clean split.</p>
       <p>
-        Guests pay <strong>$5</strong>. The venue keeps <strong>15%</strong>. The operator keeps
-        <strong>85%</strong> and covers paper, service, and card fees.
+        Guests pay <strong>$5</strong>. The venue keeps <strong>30%</strong>. The operator keeps
+        <strong>70%</strong> and covers the hardware, paper, service, and card fees.
+      </p>
+      <p>
+        Thirty percent is what it takes to be worth a bar's wall. Jukebox and amusement
+        operators land in the same range when they own and service the machine — the venue
+        supplies space, power, and a staff member who can say &ldquo;it's out of paper.&rdquo;
       </p>
 
       <div class="split-visual">
         <div class="split-labels">
-          <span class="op">Operator 85% · $4.25</span>
-          <span class="bar">Bar 15% · $0.75</span>
+          <span class="op">Operator 70% · $3.50</span>
+          <span class="bar">Bar 30% · $1.50</span>
         </div>
         <div class="split-bar" aria-hidden="true">
           <div class="operator"></div>
@@ -421,13 +429,13 @@
         <tbody>
           <tr>
             <td>Operator</td>
-            <td>85%</td>
-            <td class="money">$4.25</td>
+            <td>70%</td>
+            <td class="money">$3.50</td>
           </tr>
           <tr>
             <td>Bar / venue</td>
-            <td>15%</td>
-            <td class="money">$0.75</td>
+            <td>30%</td>
+            <td class="money">$1.50</td>
           </tr>
           <tr>
             <td>Guest pays</td>
@@ -437,8 +445,10 @@
         </tbody>
       </table>
       <p class="note">
-        Stripe Terminal processing (~2.7% + 5¢, about 18¢ on a $5 sale) comes out of the
-        operator side before net.
+        Card processing (~2.9% + 30¢, about 45¢ on a $5 sale paid by phone) and one 4×6
+        dye-sub sheet (~16¢, cut into two strips) come out of the operator side — roughly
+        <strong>$2.90 net per session</strong>. Moving to a tap reader later cuts the fee
+        to ~19¢ and lifts that to <strong>$3.15</strong>.
       </p>
     </section>
 
